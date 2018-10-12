@@ -14,11 +14,12 @@ Prueba de sistema CRUD.
 ```
 $ git clone https://github.com/bryanzavala/test.git
 $ cd test
-
-Copia `.env.example` a `.env` y configura los datos
-
-$ php artisan key:generate
 $ composer install
+$ cp .env.example .env
+$ php artisan key:generate
+
+Configura el archivo .env con la información de tu base de datos.
+
 $ php artisan migrate
 $ php artisan db:seed
 $ php artisan serve
