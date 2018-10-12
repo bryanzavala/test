@@ -14,17 +14,13 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        if (isset($_GET['naturaleza']) && isset($_GET['beneficiario'])) {
+            $transactions = Transaction::where([['naturaleza', $_GET['naturaleza']], ['beneficiario', $_GET['beneficiario']]])->get();
+        } else {
+            $transactions = Transaction::all();
+        }
+        $data = Transaction::all();
+        return view('welcome', compact('transactions', 'data'));
     }
 
     /**
@@ -35,7 +31,22 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $id = substr($request->fecha, 2, 2) . substr($request->fecha, 5, 2) . '-' . $request->bancos . '-431' . substr($request->fecha, 8, 2) . '-000' . rand(1, 9) . '.00';
+        $transaction = new Transaction();
+        $transaction->id = $id;
+        $transaction->fecha = $request->fecha;
+        $transaction->beneficiario = $request->beneficiario;
+        $transaction->salidas = $request->salidas;
+        $transaction->saldo = $request->saldo;
+        $transaction->bancos = $request->bancos;
+        $transaction->tipo_mov = $request->tipo_mov;
+        $transaction->empresa = $request->empresa;
+        $transaction->naturaleza = $request->naturaleza;
+        $transaction->save();
+        if ($transaction) {
+            return redirect()->route('home')->with('data', ['status' => 'success', 'message' => 'Registro creado correctamente.']);
+        }
+        return redirect()->route('home')->with('data', ['status' => 'error', 'message' => 'Hubo un error al crear el registro.']);
     }
 
     /**
@@ -46,18 +57,7 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Transaction  $transaction
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Transaction $transaction)
-    {
-        //
+        dd($transaction);
     }
 
     /**
@@ -69,7 +69,19 @@ class TransactionController extends Controller
      */
     public function update(Request $request, Transaction $transaction)
     {
-        //
+        $transaction->fecha = $request->fecha;
+        $transaction->beneficiario = $request->beneficiario;
+        $transaction->salidas = $request->salidas;
+        $transaction->saldo = $request->saldo;
+        $transaction->bancos = $request->bancos;
+        $transaction->tipo_mov = $request->tipo_mov;
+        $transaction->empresa = $request->empresa;
+        $transaction->naturaleza = $request->naturaleza;
+        $transaction->save();
+        if ($transaction) {
+            return redirect()->route('home')->with('data', ['status' => 'success', 'message' => 'Registro actualizado correctamente.']);
+        }
+        return redirect()->route('home')->with('data', ['status' => 'error', 'message' => 'Hubo un error al actualizar el registro.']);        
     }
 
     /**
@@ -80,6 +92,10 @@ class TransactionController extends Controller
      */
     public function destroy(Transaction $transaction)
     {
-        //
+        if ($transaction) {
+            $transaction->delete();
+            return redirect()->route('home')->with('data', ['status' => 'success', 'message' => 'Registro borrado correctamente.']);
+        }
+        return redirect()->route('home')->with('data', ['status' => 'error', 'message' => 'Hubo un error al borrar el registro.']);          
     }
 }

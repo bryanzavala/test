@@ -11,6 +11,5 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'TransactionController@index')->name('home');
+Route::apiResource('/transactions', 'TransactionController');
