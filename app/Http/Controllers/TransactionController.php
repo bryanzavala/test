@@ -15,9 +15,9 @@ class TransactionController extends Controller
     public function index()
     {
         if (isset($_GET['naturaleza']) && isset($_GET['beneficiario'])) {
-            $transactions = Transaction::where([['naturaleza', $_GET['naturaleza']], ['beneficiario', $_GET['beneficiario']]])->get();
+            $transactions = Transaction::orderBy('fecha', 'desc')->where([['naturaleza', $_GET['naturaleza']], ['beneficiario', $_GET['beneficiario']]])->get();
         } else {
-            $transactions = Transaction::all();
+            $transactions = Transaction::orderBy('fecha', 'desc')->get();
         }
         $data = Transaction::all();
         return view('welcome', compact('transactions', 'data'));
